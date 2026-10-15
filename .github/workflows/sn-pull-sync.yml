@@ -25,6 +25,7 @@ jobs:
   pull-from-servicenow:
     name: Export app from ServiceNow to mydev
     runs-on: ubuntu-latest
+    environment: ${{ inputs.instance == 'prod' && 'production' || 'development' }}
 
     steps:
       - name: Checkout mydev
