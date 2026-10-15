@@ -1,0 +1,109 @@
+name: Inspect ServiceNow instance (read-only)
+
+# Manual, read-only. Makes GET requests to the Table API only - nothing is
+# created, changed or deployed on the instance.
+#
+# Phase A (always): installed store apps, custom apps and plugins.
+# Phase B (optional): tables, fields and roles for a scope prefix and/or
+#                     specific table names.
+# Output: uploaded as a workflow artifact (not committed to the repo).
+on:
+  workflow_dispatch:
+    inputs:
+      scope_prefix:
+        description: 'Table/role name prefix to dump, e.g. sn_customerservice (leave empty to skip)'
+        required: false
+        default: ''
+      extra_tables:
+        description: 'Comma-separated exact table names to dump, e.g. customer_account,csm_consumer (leave empty to skip)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    name: Read instance metadata
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Fetch metadata
+        env:
+          SN_INSTANCE: ${{ secrets.SN_DEV_INSTANCE }}
+          SN_USER: ${{ secrets.SN_DEV_USER }}
+          SN_PASS: ${{ secrets.SN_DEV_PASS }}
+          SCOPE_PREFIX: ${{ inputs.scope_prefix }}
+          EXTRA_TABLES: ${{ inputs.extra_tables }}
+        run: |
+          set -euo pipefail
+          base="${SN_INSTANCE%/}"
+          mkdir -p out
+
+          # fetch <table> <encoded query> <fields> <outfile>  (pages through all rows)
+          fetch() {
+            local table="$1" query="$2" fields="$3" out="$4"
+            local offset=0 limit=1000 n
+            echo '[]' > "$out"
+            while :; do
+              curl -sS -f -u "$SN_USER:$SN_PASS" -H 'Accept: application/json' \
+                -G "$base/api/now/table/$table" \
+                --data-urlencode "sysparm_query=${query}^ORDERBYsys_id" \
+                --data-urlencode "sysparm_fields=$fields" \
+                --data-urlencode "sysparm_limit=$limit" \
+                --data-urlencode "sysparm_offset=$offset" \
+                --data-urlencode "sysparm_exclude_reference_link=true" \
+                -o page.json || { echo "ERROR: GET $table failed"; return 1; }
+              n=$(jq '.result | length' page.json) || return 1
+              jq -s '.[0] + .[1].result' "$out" page.json > merged.json || return 1
+              mv merged.json "$out"
+              if [ "$n" -lt "$limit" ]; then break; fi
+              offset=$((offset + limit))
+            done
+            echo "$table -> $(jq length "$out") rows"
+          }
+
+          echo "=== Phase A: installed applications ==="
+          # Required: if this fails, credentials/URL/ACL are wrong.
+          fetch sys_store_app "active=true" "name,scope,version,sys_id" out/store_apps.json
+          fetch sys_app "active=true" "name,scope,version,sys_id" out/custom_apps.json || echo "sys_app skipped"
+          fetch v_plugin "active=true" "id,name,active,version" out/plugins.json || echo "v_plugin skipped"
+
+          {
+            echo "## Installed apps matching public sector / customer service"
+            echo
+            echo "| Name | Scope | Version |"
+            echo "|---|---|---|"
+            jq -r '.[] | select(((.name // "") + " " + (.scope // "")) | test("public|psds|customer|csm|consumer|sector"; "i")) | "| \(.name) | \(.scope) | \(.version) |"' \
+              out/store_apps.json out/custom_apps.json 2>/dev/null || true
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "=== Phase B: schema dump ==="
+          query=""
+          if [ -n "${SCOPE_PREFIX}" ]; then
+            query="nameSTARTSWITH${SCOPE_PREFIX}"
+          fi
+          if [ -n "${EXTRA_TABLES}" ]; then
+            extra="nameIN${EXTRA_TABLES// /}"
+            if [ -n "$query" ]; then query="${query}^OR${extra}"; else query="$extra"; fi
+          fi
+
+          if [ -z "$query" ]; then
+            echo "No scope_prefix or extra_tables given - skipping Phase B."
+          else
+            fetch sys_db_object "$query" "name,label,super_class.name,sys_scope.scope,sys_scope.name" out/tables.json
+            fetch sys_dictionary "${query}^elementISNOTEMPTY" "name,element,column_label,internal_type,reference,mandatory,max_length,read_only,default_value" out/fields.json
+            if [ -n "${SCOPE_PREFIX}" ]; then
+              fetch sys_user_role "nameSTARTSWITH${SCOPE_PREFIX}" "name,description,grantable" out/roles.json
+            fi
+          fi
+
+          ls -l out
+
+      - name: Upload metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: instance-metadata
+          path: out/
+          retention-days: 3

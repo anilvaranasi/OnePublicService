@@ -5,3 +5,5 @@ node_modules/
 target/
 *.tsbuildinfo
 .jest_cache
+# Local Bob/MCP config - contains API tokens, never commit
+.bob/
