@@ -48,7 +48,14 @@ jobs:
             --password-stdin
 
       - name: Download type definitions
-        run: npx now-sdk dependencies --auth dev
+        run: |
+          # now-sdk exits 0 even when a fetch fails, so check the output.
+          npx now-sdk dependencies --auth dev 2>&1 | tee types.log
+          if grep -q "ERROR:" types.log; then
+            echo "now-sdk reported errors - not committing partial types."
+            exit 1
+          fi
+          rm -f types.log
 
       - name: Commit type definitions to mydev
         run: |

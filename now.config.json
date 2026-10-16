@@ -7,8 +7,34 @@
     },
     "dependencies": {
         "sn_gsm": {
-            "tables": "*",
-            "roles": "*"
+            "tables": [
+                "sn_gsm_government_service_case",
+                "sn_gsm_document"
+            ],
+            "roles": [
+                "sn_gsm.admin",
+                "sn_gsm.case_task_agent",
+                "sn_gsm.constituent",
+                "sn_gsm.constituent_agent",
+                "sn_gsm.constituent_contributor",
+                "sn_gsm.government_service_manager",
+                "sn_gsm.report_viewer"
+            ]
+        },
+        "sn_gsm_info_req": {
+            "tables": [
+                "sn_gsm_information_request_case"
+            ]
+        },
+        "sn_gsm_lic_prmt": {
+            "tables": [
+                "sn_gsm_license_permit_case"
+            ]
+        },
+        "sn_gsm_soc_bnfts": {
+            "tables": [
+                "sn_gsm_social_benefits_case"
+            ]
         }
     },
     "ideCreated": "SNS"
