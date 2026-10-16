@@ -1,0 +1,64 @@
+name: Fetch ServiceNow type definitions to mydev
+
+# Run manually to download type definitions for the scopes listed under
+# "dependencies" in now.config.json (now-sdk dependencies) and commit the
+# generated @types/servicenow folder to the mydev branch.
+# Type definitions only affect compile-time typing; they do not change what is
+# built or installed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: '20'
+  SYNC_BRANCH: 'mydev'
+
+jobs:
+  fetch-types:
+    name: Run now-sdk dependencies and commit @types/servicenow
+    runs-on: ubuntu-latest
+    environment: development
+
+    steps:
+      - name: Checkout mydev
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SYNC_BRANCH }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Authenticate now-sdk to DEV
+        run: |
+          echo "${{ secrets.SN_DEV_PASS }}" | npx now-sdk auth \
+            --add "${{ secrets.SN_DEV_INSTANCE }}" \
+            --type basic \
+            --alias dev \
+            --username "${{ secrets.SN_DEV_USER }}" \
+            --password-stdin
+
+      - name: Download type definitions
+        run: npx now-sdk dependencies --auth dev
+
+      - name: Commit type definitions to mydev
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add @types now.config.json
+          if git diff --cached --quiet; then
+            echo "No type definition changes - mydev is already up to date."
+          else
+            git commit -m "types: update @types/servicenow from ServiceNow dev on $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push origin ${{ env.SYNC_BRANCH }}
+            echo "mydev updated. Run: git pull origin mydev"
+          fi

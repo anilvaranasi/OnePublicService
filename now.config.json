@@ -5,5 +5,11 @@
     "licensing": {
         "enforceLicense": "none"
     },
+    "dependencies": {
+        "sn_gsm": {
+            "tables": "*",
+            "roles": "*"
+        }
+    },
     "ideCreated": "SNS"
 }
