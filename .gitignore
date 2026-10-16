@@ -7,3 +7,7 @@ target/
 .jest_cache
 # Local Bob/MCP config - contains API tokens, never commit
 .bob/
+
+# Local-only material - never commit (public repo; may be licensed/confidential)
+reference/
+docs/
