@@ -5,7 +5,7 @@ import { Table, StringColumn } from '@servicenow/sdk/core'
 // Mandal (sub-district) is deferred to a later phase — it is not on the registration form
 // observed on MeeSeva (Observed). The table is extensible so Mandal can be added as a
 // child table later without a schema change here.
-export const districtTable = Table({
+export const x_146833_onepubl_0_district = Table({
     name: 'x_146833_onepubl_0_district',
     label: 'District',
     display: 'name',

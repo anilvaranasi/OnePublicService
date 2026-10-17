@@ -1,60 +1,40 @@
 import { Record } from '@servicenow/sdk/core'
-import { districtTable } from '../tables/district.now'
 
 // C-07: Telangana district reference data (Observed, MeeSeva registration form).
-// 33 districts in the form's order by name. Codes are the form's option values (01–33).
-// installMethod 'demo' loads on fresh install only; replace with 'once' when the data
-// should also load on upgrade.
+// 33 districts. Codes are the form's option values (01–33).
+// Fluent SDK files do not allow arrays, forEach or destructuring — each record is
+// declared individually.
 
-const COUNTRY = 'India'
-const STATE = 'Telangana'
-
-const districts: { code: string; name: string }[] = [
-    { code: '01', name: 'ADILABAD' },
-    { code: '02', name: 'MANCHERIAL' },
-    { code: '03', name: 'NIRMAL' },
-    { code: '04', name: 'KUMURAM BHEEM ASIFABAD' },
-    { code: '05', name: 'KARIMNAGAR' },
-    { code: '06', name: 'JAGTIAL' },
-    { code: '07', name: 'PEDDAPALLI' },
-    { code: '08', name: 'RAJANNA SIRCILLA' },
-    { code: '09', name: 'NIZAMABAD' },
-    { code: '10', name: 'KAMAREDDY' },
-    { code: '11', name: 'HANUMAKONDA' },
-    { code: '12', name: 'WARANGAL' },
-    { code: '13', name: 'JAYASHANKAR BHUPALPALLY' },
-    { code: '14', name: 'JANGAON' },
-    { code: '15', name: 'MAHABUBABAD' },
-    { code: '16', name: 'KHAMMAM' },
-    { code: '17', name: 'BHADRADRI KOTHAGUDEM' },
-    { code: '18', name: 'MEDAK' },
-    { code: '19', name: 'SANGAREDDY' },
-    { code: '20', name: 'SIDDIPET' },
-    { code: '21', name: 'MAHABUBNAGAR' },
-    { code: '22', name: 'WANAPARTHY' },
-    { code: '23', name: 'NAGARKURNOOL' },
-    { code: '24', name: 'JOGULAMBA GADWAL' },
-    { code: '25', name: 'NALGONDA' },
-    { code: '26', name: 'SURYAPET' },
-    { code: '27', name: 'YADADRI BHUVANAGIRI' },
-    { code: '28', name: 'VIKARABAD' },
-    { code: '29', name: 'MEDCHAL-MALKAJGIRI' },
-    { code: '30', name: 'RANGA REDDY' },
-    { code: '31', name: 'HYDERABAD' },
-    { code: '32', name: 'MULUGU' },
-    { code: '33', name: 'NARAYANPET' },
-]
-
-districts.forEach(({ code, name }) => {
-    Record({
-        $id: `district-ts-${code}`,
-        $meta: { installMethod: 'demo' },
-        table: 'x_146833_onepubl_0_district',
-        data: {
-            name,
-            code,
-            state: STATE,
-            country: COUNTRY,
-        },
-    })
-})
+Record({ $id: 'district-ts-01', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'ADILABAD',                  code: '01', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-02', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'MANCHERIAL',                 code: '02', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-03', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'NIRMAL',                     code: '03', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-04', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'KUMURAM BHEEM ASIFABAD',     code: '04', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-05', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'KARIMNAGAR',                 code: '05', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-06', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'JAGTIAL',                    code: '06', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-07', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'PEDDAPALLI',                 code: '07', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-08', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'RAJANNA SIRCILLA',           code: '08', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-09', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'NIZAMABAD',                  code: '09', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-10', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'KAMAREDDY',                  code: '10', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-11', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'HANUMAKONDA',                code: '11', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-12', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'WARANGAL',                   code: '12', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-13', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'JAYASHANKAR BHUPALPALLY',   code: '13', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-14', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'JANGAON',                    code: '14', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-15', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'MAHABUBABAD',                code: '15', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-16', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'KHAMMAM',                    code: '16', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-17', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'BHADRADRI KOTHAGUDEM',      code: '17', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-18', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'MEDAK',                      code: '18', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-19', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'SANGAREDDY',                 code: '19', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-20', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'SIDDIPET',                   code: '20', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-21', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'MAHABUBNAGAR',               code: '21', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-22', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'WANAPARTHY',                 code: '22', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-23', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'NAGARKURNOOL',               code: '23', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-24', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'JOGULAMBA GADWAL',           code: '24', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-25', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'NALGONDA',                   code: '25', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-26', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'SURYAPET',                   code: '26', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-27', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'YADADRI BHUVANAGIRI',        code: '27', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-28', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'VIKARABAD',                  code: '28', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-29', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'MEDCHAL-MALKAJGIRI',         code: '29', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-30', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'RANGA REDDY',                code: '30', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-31', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'HYDERABAD',                  code: '31', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-32', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'MULUGU',                     code: '32', state: 'Telangana', country: 'India' } })
+Record({ $id: 'district-ts-33', $meta: { installMethod: 'demo' }, table: 'x_146833_onepubl_0_district', data: { name: 'NARAYANPET',                 code: '33', state: 'Telangana', country: 'India' } })
